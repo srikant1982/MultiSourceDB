@@ -2,7 +2,9 @@ package com.jpa.multisource.configuration;
 
 import com.jpa.multisource.college.entity.College;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -20,7 +22,7 @@ import java.util.Objects;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "com.jpa.multisource.college.repository",
+@EnableJpaRepositories(basePackages = {"com.jpa.multisource.college.repository"},
         entityManagerFactoryRef = "collegeEntityManagerFactory",
         transactionManagerRef = "collegeTransactionManager")
 public class CollegeDataSourceConfiguration {
@@ -33,14 +35,13 @@ public class CollegeDataSourceConfiguration {
 
     @Bean
     @Primary
-    @ConfigurationProperties("spring.datasource.college.configuration")
     public DataSource collegeDataSource() {
         return collegeDataSourceProperties().initializeDataSourceBuilder()
                 .type(HikariDataSource.class).build();
     }
 
 
-    @Bean(name = "collegeEntityManagerFactory")
+    @Bean(name = {"collegeEntityManagerFactory"})
     @Primary
     public LocalContainerEntityManagerFactoryBean collegeEntityManagerFactory(
              EntityManagerFactoryBuilder builder) {
@@ -51,7 +52,7 @@ public class CollegeDataSourceConfiguration {
     }
 
 
-    @Bean(name = "collegeTransactionManager")
+    @Bean(name = {"collegeTransactionManager"})
     @Primary
     public PlatformTransactionManager collegeTransactionManager(
             final @Qualifier("collegeEntityManagerFactory") LocalContainerEntityManagerFactoryBean collegeEntityManagerFactory) {

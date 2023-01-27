@@ -26,14 +26,12 @@ import java.util.Objects;
 public class StudentDataSourceConfiguration {
 
     @Bean
-    @Primary
     @ConfigurationProperties("spring.datasource.student")
     public DataSourceProperties studentDataSourceProperties() {
         return new DataSourceProperties();
     }
 
     @Bean
-    @Primary
     @ConfigurationProperties("spring.datasource.student.configuration")
     public DataSource studentDataSource() {
         return studentDataSourceProperties().initializeDataSourceBuilder()
@@ -41,7 +39,6 @@ public class StudentDataSourceConfiguration {
     }
 
     @Bean(name = "studentEntityManagerFactory")
-    @Primary
     public LocalContainerEntityManagerFactoryBean studentEntityManagerFactory(
             EntityManagerFactoryBuilder builder) {
         return builder
@@ -52,7 +49,6 @@ public class StudentDataSourceConfiguration {
 
 
     @Bean(name = "studentTransactionManager")
-    @Primary
     public PlatformTransactionManager studentTransactionManager(
             final @Qualifier("studentEntityManagerFactory") LocalContainerEntityManagerFactoryBean studentEntityManagerFactory) {
         return new JpaTransactionManager(Objects.requireNonNull(studentEntityManagerFactory.getObject()));
